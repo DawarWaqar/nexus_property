@@ -11,7 +11,7 @@ public class DataValidation {
 	private static final String password = "password";
 
 	// Regular expressions for validation
-	private static final String LOCATION_REGEX = "^[0-9]*[a-zA-Z\\s.,'-]+$|^$";
+	private static final String LOCATION_REGEX = "^[0-9]*(?=.*[a-zA-Z])[a-zA-Z0-9\\s.,'-]+$|^$";
 	private static final String POSITIVE_INTEGER_REGEX = "^[1-9]\\d*$|^$";
 	private static final String CURRENCY_REGEX = "^[1-9]\\d*(\\.\\d+)?$|^$";
 	private static final String PROPERTY_TYPE = "(Residential|Commercial|Land|Special Purpose|Mixed-Use|Other)|^$";
