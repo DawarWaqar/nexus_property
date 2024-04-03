@@ -25,10 +25,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        runWebCrawler(args);
+       runWebCrawler(args);
 
         try {
             PostProcessData.main(args); // add ids and remove empty objects from data
+            String fileName = "data.json";
+			Input I = new Input();
+			Input input = I.main(fileName);
+			System.out.print(input);
 
         } catch (IOException e) {
             e.printStackTrace();
