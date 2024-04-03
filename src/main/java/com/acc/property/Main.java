@@ -18,7 +18,7 @@ public class Main {
 			System.out.println("Shall we start with the implemention (y/n): ");
 			String isStart = sc.nextLine();
 			if (isStart.toLowerCase().equals("y")) {
-//				runWebCrawler();
+				runWebCrawler();
 				// add ids and remove empty objects from data
 				PostProcessData.main(args);
 				String fileName = "data.json";
