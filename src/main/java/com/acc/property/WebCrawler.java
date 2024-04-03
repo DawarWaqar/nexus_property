@@ -1,13 +1,15 @@
 package com.acc.property;
-
+import java.awt.Dimension;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.time.Duration;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,7 +22,8 @@ public class WebCrawler {
 	static JSONArray jsonArray = new JSONArray();
 	static WebDriverWait wait;
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		setupWebDriver();
 		startCrawling();
 	}
@@ -36,27 +39,27 @@ public class WebCrawler {
 
 	public static void startCrawling() {
 		try {
-			String[] websites = { "point2homes", "remax" };
+			String[] websites = {"point2homes", "remax", "propertyguys"};
 			for (String website : websites) {
 				String url = constructURL(website);
-
-				driver.get(url);
-				Thread.sleep(5000); // Adding a wait for page load (adjust if necessary)
-
+				Thread.sleep(2000); // Adding a wait for page load
 				switch (website) {
-					case "point2homes":
-						Crawlp2h();
-						break;
-					case "remax":
-						CrawlRemax(url, "on/windsor");
-						break;
+				case "point2homes":
+					Crawlp2h(url,"on/windsor");
+					break;
+				case "remax":
+					CrawlRemax(url, "on/windsor");
+					break;
+				case "propertyguys":
+					CrawlPropertyGuys(url, "on/windsor");
+					break;
 				}
 			}
 
 			// Write JSON array to file
 			try (FileWriter file = new FileWriter("data.json")) {
 				file.write(jsonArray.toJSONString());
-				System.out.println("JSON array written to data.json file");
+				System.out.println("JSON array written to output.json file");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -67,93 +70,26 @@ public class WebCrawler {
 		}
 	}
 
-	private static String constructURL(String website) {
+	private static String constructURL(String website) 
+	{
 		switch (website) {
-			case "point2homes":
-				return String.format("https://www.point2homes.com/CA/Real-Estate-Listings/ON/Windsor.html");
-			case "remax":
-				return String.format("https://www.remax.ca/");
-			default:
-				throw new IllegalArgumentException("Unsupported website: " + website);
+		case "point2homes":
+			return String.format("https://www.point2homes.com/CA/Real-Estate-Listings/ON/Windsor.html");
+		case "remax":
+			return String.format("https://www.remax.ca/");
+		case "realtor":
+			return String.format("");
+		case "propertyguys":
+			return String.format("https://propertyguys.com/search/ca/");
+		default:
+			throw new IllegalArgumentException("Unsupported website: " + website);
 		}
 	}
 
-	public static void Crawlp2h() {
-		try {
-			// Wait for the listings to load
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("listings")));
-			List<WebElement> items = driver.findElements(By.cssSelector(".items > li"));
-
-			for (WebElement item : items) {
-				// System.out.println(item.getText());
-				JSONObject itemObject = new JSONObject();
-				try {
-
-					String dataAddressValue = GetaddressValue(item);
-					itemObject.put("location", dataAddressValue);
-
-					String bedValue = GetBedsValue(item);
-					itemObject.put("beds", bedValue);
-
-					String bathsValue = GetBathsValue(item);
-					itemObject.put("baths", bathsValue);
-
-					String propertyType = GetPropertyTypeValue(item);
-					itemObject.put("propertyType", propertyType);
-
-					String priceValue = GetPriceValue(item);
-					itemObject.put("price", priceValue);
-
-					// Find the <div> element with the specified class name
-					WebElement openHouseElement = item.findElement(By.cssSelector("div.open-house-right"));
-					// Find the nested <div> element with the specified class name containing open
-					// house information
-					WebElement openHouseInfoElement = openHouseElement
-							.findElement(By.cssSelector("div.open-house-line"));
-					String[] DayDateTime = GetDayDateTime(openHouseInfoElement);
-					// Output the extracted components
-					itemObject.put("OpenHouseDay: ", DayDateTime[0]);
-					itemObject.put("OpenHouseDate: ", DayDateTime[1]);
-					itemObject.put("OpenHouseMonth: ", DayDateTime[2]);
-					itemObject.put("OpenHouseStartTime: ", DayDateTime[4]);
-					itemObject.put("OpenHouseEndTime: ", DayDateTime[6]);
-
-					jsonArray.add(itemObject);
-
-				} catch (org.openqa.selenium.NoSuchElementException e) {
-					jsonArray.add(itemObject);
-				}
-			}
-			// // Write JSON array to file
-			// try (FileWriter file = new FileWriter("output.json", true)) {
-			// file.write(jsonArrayP2home.toJSONString());
-			// System.out.println("JSON array written to output.json file");
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-		} finally {
-			// driver.quit();
-		}
-	}
-
-	public static String GetaddressValue(WebElement item) {
-		WebElement addressContainer = item.findElement(By.className("address-container"));
-		// Get the value of the data-address attribute
-		String addressValue = addressContainer.getAttribute("data-address");
-
-		// Print the extracted value
-		// System.out.println("Value of data-address attribute: " + addressValue);
-
-		return addressValue;
-
-	}
-
-	public static String GetBedsValue(WebElement item) {
+	public static String GetBedsValue(WebElement item) 
+	{
 		WebElement bedElement = item.findElement(By.cssSelector("li.ic-beds"));
 		String bedsValue = bedElement.getText();
-
-		// Print the extracted value
-		// System.out.println("Bed Value: " + bedsValue);
 		return bedsValue;
 	}
 
@@ -163,9 +99,6 @@ public class WebCrawler {
 
 		// Extract the text content of the <li> element
 		String bathsValue = bathElement.getText().trim();
-
-		// Print the extracted value
-		// System.out.println("Baths value: " + bathsValue);
 
 		return bathsValue;
 	}
@@ -177,10 +110,6 @@ public class WebCrawler {
 
 		// Extract the text content of the <li> element
 		String propertyType = porpertyTypeElement.getText().trim();
-
-		// Print the extracted value
-		// System.out.println("Property type: " + propertyType);
-
 		return propertyType;
 	}
 
@@ -191,13 +120,19 @@ public class WebCrawler {
 		// Extract the value of the "data-price" attribute
 		String price = priceElement.getAttribute("data-price");
 
-		// Print the extracted value
-		// System.out.println("Price: " + price);
-
 		return price;
 	}
 
-	public static String[] GetDayDateTime(WebElement item) {
+	public static String GetImageVlue(WebElement item) {
+		// Find the img element
+		WebElement imgElement = item.findElement(By.tagName("img"));
+
+		// Extract the value of the src attribute
+		return imgElement.getAttribute("src");
+	}
+
+	public static String[] GetDayDateTime(WebElement item)
+	{
 		// Extract the text from the element
 		String openHouseText = item.getText();
 
@@ -211,24 +146,78 @@ public class WebCrawler {
 		String startTime = parts[3];
 		String endTime = parts[6];
 
-		// // Output the extracted components
-		// System.out.println("Day: " + day);
-		// System.out.println("Date: " + date);
-		// System.out.println("Month: " + month);
-		// System.out.println("Start Time: " + startTime);
-		// System.out.println("End Time: " + endTime);
-
 		return parts;
 	}
 
-	// ************************************ ZooCasa
-	// ************************************
+	//************************************ Point2Homes.com ************************************
+	public static void Crawlp2h(String defaultUrl, String location) {
+		try {
+
+			driver.get(defaultUrl);
+			Thread.sleep(2000); // Adding a wait for page load
+			// Wait for the listings to load
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("listings")));
+			List<WebElement> items = driver.findElements(By.cssSelector(".items > li"));
+
+			for (WebElement item : items) {
+				JSONObject itemObject = new JSONObject();
+				try {
+
+					//					String dataAddressValue = GetaddressValue(item);
+					// Find the div containing the property address
+					WebElement addressContainerDiv = driver.findElement(By.className("address-container"));
+
+					// Extract the full address text
+					String fullAddress = addressContainerDiv.getText().trim();
+
+					// Split the full address into street address, city, and province
+					String[] addressParts = fullAddress.split(",\\s*", 3); // Split on comma and optional whitespace
+					String streetAddress = addressParts[0];
+					String city = addressParts[1];
+					String province = addressParts[2];
+
+					String bedValue = GetBedsValue(item);
+					String bathsValue = GetBathsValue(item);
+					String propertyType = GetPropertyTypeValue(item);
+					String priceValue = GetPriceValue(item);
+					String imageSrc = GetImageVlue(item);
+
+					// Find the <div> element with the specified class name
+					WebElement openHouseElement = item.findElement(By.cssSelector("div.open-house-right"));
+					// Find the nested <div> element with the specified class name containing open house information
+					WebElement openHouseInfoElement = openHouseElement.findElement(By.cssSelector("div.open-house-line"));
+					String [] DayDateTime = GetDayDateTime(openHouseInfoElement);
+
+					// Output the extracted components
+					itemObject.put("location",  String.format("%s,%s,%s", streetAddress, city,province));
+					itemObject.put("city", city);
+					itemObject.put("province", province);
+					itemObject.put("beds", bedValue);
+					itemObject.put("baths", bathsValue);
+					itemObject.put("propertyType", propertyType);
+					itemObject.put("price", priceValue);
+					itemObject.put("imageSrc", imageSrc);
+					itemObject.put("image", imageSrc);
+					jsonArray.add(itemObject);
+
+				} catch (org.openqa.selenium.NoSuchElementException e) {
+				}
+			}
+		} 
+		catch(Exception e) {
+
+		}
+		finally {
+			//			driver.quit();
+		}
+	}
+
+	//************************************ ReMax.ca ************************************
 	public static void CrawlRemax(String defaultUrl, String location) {
 
 		try {
-			for (int i = 0; i < 4; i++) {
-				String Url = String.format("%s/%s-real-estate?pageNumber=%s", defaultUrl, location, i + 1);
-				System.out.println(Url);
+			for(int i=0; i<4 ; i++) {
+				String Url = String.format("%s/%s-real-estate?pageNumber=%s",defaultUrl,location,i+1);
 				driver.get(Url);
 				Thread.sleep(2000);
 				List<WebElement> listingCards = driver.findElements(By.cssSelector("[data-testid='listing-card']"));
@@ -245,30 +234,87 @@ public class WebCrawler {
 					String bed = bedElement.getText();
 					String bath = bathElement.getText();
 
-					// Get the address
-					WebElement addressElement = listingCard.findElement(By.cssSelector("[data-cy='property-address']"));
-					String address = addressElement.getText();
+					// Find the div containing the property address
+					WebElement propertyAddressDiv = driver.findElement(By.cssSelector("[data-cy='property-address']"));
 
-					itemObject.put("location", address);
+					// Extract the street address
+					String streetAddress = propertyAddressDiv.findElement(By.tagName("span")).getText().trim();
+
+					// Extract the city and province
+					String cityProvince = propertyAddressDiv.findElement(By.xpath("//span[2]")).getText().trim();
+
+					// Split the cityProvince into city and province
+					String[] cityProvinceParts = cityProvince.split(",\\s*", 2); // Split on comma and optional whitespace
+					String city = null;
+					String province = null;
+					if(cityProvinceParts!=null && cityProvinceParts.length ==2){
+					city = cityProvinceParts[0];
+					province = cityProvinceParts[1];
+					}
+
+					// Find the img element
+					WebElement imgElement = listingCard.findElement(By.tagName("img"));
+					// Extract the value of the src attribute
+					String srcValue = imgElement.getAttribute("src");
+
+					itemObject.put("location",  String.format("%s,%s", streetAddress, cityProvince));
+					itemObject.put("city", city);
+					itemObject.put("province", province);
 					itemObject.put("beds", bed);
 					itemObject.put("baths", bath);
 					itemObject.put("propertyType", "residential");
 					itemObject.put("price", price);
-
-					// Print the details
-					System.out.println("Price: " + price);
-					System.out.println("Bed: " + bed);
-					System.out.println("Bath: " + bath);
-					System.out.println("Location: " + address);
-					System.out.println("------------------------------");
-
+					itemObject.put("image", srcValue);
 					jsonArray.add(itemObject);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			driver.quit();
+			//			driver.quit();
+		}
+	}
+
+	//************************************ propertyguys.com ************************************
+	public static void CrawlPropertyGuys(String defaultUrl, String location) {
+		String Url = String.format("%s%s",defaultUrl,location);
+		driver.get(Url);
+		// Find the div with class "listing-list"
+		//        WebElement listingListDiv = driver.findElement(By.className("listing-list"));
+		WebElement listingListDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("listing-list")));
+
+		// Find all divs with class "listing-container" within listingListDiv
+		List<WebElement> listingContainers = listingListDiv.findElements(By.className("listing-container"));
+		System.out.println(listingContainers.size());
+
+		// Loop through each listing-container
+		for (WebElement container : listingContainers) {
+			// Extract data
+			String bedroom = container.findElement(By.className("bedroom")).getText().trim();
+			String bathroom = container.findElement(By.className("bathroom")).getText().trim();
+			String street = container.findElement(By.className("street")).getText().trim();
+
+			String cityProvince = container.findElement(By.className("city-province")).getText().trim();
+			String[] cityProvinceArray = cityProvince.split(",\\s*", 2); // Split on comma and optional whitespace
+			String city = cityProvinceArray[0];
+			String province = cityProvinceArray[1];
+
+			String price = container.findElement(By.className("price")).getText().trim();
+			String listingPhoto = container.findElement(By.className("listing-photo")).getAttribute("src");
+
+			// Create a JSONObject for current listing
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("location", String.format("%s%s", street, cityProvince));
+			jsonObject.put("city", city);
+			jsonObject.put("province", province);
+			jsonObject.put("beds", bedroom);
+			jsonObject.put("baths", bathroom);
+			jsonObject.put("propertyType", "residential");
+			jsonObject.put("price", price);
+			jsonObject.put("image", listingPhoto);
+
+			// Add the JSONObject to the JSONArray
+			jsonArray.add(jsonObject);
 		}
 	}
 }
