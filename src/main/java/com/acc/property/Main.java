@@ -18,7 +18,7 @@ public class Main {
         }
 
         if (option != 0) {
-            WebCrawler.main(args); // running the webcrawler, user should have the argument==0 if it wants to run
+            WebCrawler.main(args); // running the webcrawler, user should have the argument==1 if it wants to run
                                    // with
                                    // webcrawler
         }
