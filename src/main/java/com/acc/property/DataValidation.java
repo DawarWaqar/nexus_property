@@ -14,7 +14,7 @@ public class DataValidation {
 	private static final String LOCATION_REGEX = "^[0-9]*(?=.*[a-zA-Z])[a-zA-Z0-9\\s.,'-]+$|^$";
 	private static final String POSITIVE_INTEGER_REGEX = "^[1-9]\\d*$|^$";
 	private static final String CURRENCY_REGEX = "^[1-9]\\d*(\\.\\d+)?$|^$";
-	private static final String PROPERTY_TYPE = "(Residential|Commercial|Land|Special Purpose|Mixed-Use|Other)|^$";
+	private static final String PROPERTY_TYPE = "(residential|commercial|land|special purpose|mixed-use|other)|^$";
 	private static final String EMAIL_REGEX = "^[\\w!#$%&'*+/=?^`{|}~-]{5,}(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(?:[a-zA-Z0-9]{4,}\\.)+[a-zA-Z]{2,6}$|^$";
 	private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&*!])(?=.{8,}$)|^$";
 //  private static final String LOCATION_REGEX = "^(?=.*\\S)[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+[^\\s]$";
@@ -49,7 +49,7 @@ public class DataValidation {
 	}
 
 	public static boolean isValidPropertyType(String value) {
-		return Pattern.matches(PROPERTY_TYPE, value);
+		return Pattern.matches(PROPERTY_TYPE, value.toLowerCase());
 	}
 
 	public boolean isValid(String strType, String str) {

@@ -22,7 +22,7 @@ public class WebCrawler {
 	static JSONArray jsonArray = new JSONArray();
 	static WebDriverWait wait;
 
-	public static void main() {
+	public static void main(String[] args) {
 		setupWebDriver();
 		startCrawling();
 	}
@@ -58,7 +58,7 @@ public class WebCrawler {
 			// Write JSON array to file
 			try (FileWriter file = new FileWriter("data.json")) {
 				file.write(jsonArray.toJSONString());
-				System.out.println("JSON array written to output.json file");
+				System.out.println("JSON array written to data.json file");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

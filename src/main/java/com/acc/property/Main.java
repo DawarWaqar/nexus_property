@@ -5,9 +5,9 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void runWebCrawler() {
+    public static void runWebCrawler(String[] args) {
 
-            WebCrawler.main(); // running the webcrawler, user should have the argument==1 if it wants to run
+            WebCrawler.main(args); // running the webcrawler, user should have the argument==1 if it wants to run
                                    // with
                                    // webcrawler
     }
@@ -18,12 +18,12 @@ public class Main {
         	System.out.println("Do you want to run web crawling? (y/n):");
         	String isWebCrawling = sc.nextLine();
         	if (isWebCrawling.toLowerCase().equals("y")) {
-        		runWebCrawler();
-        		PostProcessData.main();
+        		runWebCrawler(args);
+        		PostProcessData.main(args);
         	}
         	else if (isWebCrawling.toLowerCase().equals("n")){
-        		System.out.println("The program will run without web crawler now. But this means that there is no data!");
-        		PostProcessData.main();
+        		System.out.println("The program will run without web crawler now.");
+        		PostProcessData.main(args);
         	}
         	else {
         		System.out.println("Invalid Input");

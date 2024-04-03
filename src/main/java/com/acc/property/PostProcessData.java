@@ -45,7 +45,7 @@ public class PostProcessData {
 
     }
 
-    public static void main() throws IOException {
+    public static void main(String[] args) throws IOException {
         processProperties("data.json");
     }
 }
