@@ -1,38 +1,42 @@
 package com.acc.property;
 
 import java.io.IOException;
-import java.util.Scanner;
-
-import com.acc.property.WebCrawler;
-import com.acc.property.Input;
 
 public class Main {
 
-	public static void runWebCrawler() {
-		WebCrawler.main(); // running the webcrawler, user should have the argument==0 if it wants to run
-	}
+    public static void runWebCrawler(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Incorrect number of arguments");
+            return;
+        }
+        int option;
+        try {
+            option = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.err.println("Argument must be an integer");
+            return;
+        }
 
-	public static void main(String[] args) {
-		try {
-			Scanner sc = new Scanner(System.in);
-			System.out.println("Shall we start with the implemention (y/n): ");
-			String isStart = sc.nextLine();
-			if (isStart.toLowerCase().equals("y")) {
-				runWebCrawler();
-				// add ids and remove empty objects from data
-				PostProcessData.main(args);
-				String fileName = "data.json";
-				Input I = new Input();
-				Input input = I.main(fileName);
-				System.out.print(input);
-			} else if (isStart.toLowerCase().equals("n")) {
-				System.out.println("Program has been ended!");
-			} else {
-				System.out.println("Invalid Command!");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        if (option != 0) {
+            WebCrawler.main(args); // running the webcrawler, user should have the argument==1 if it wants to run
+                                   // with
+                                   // webcrawler
+        }
+    }
 
-	}
+    public static void main(String[] args) {
+       runWebCrawler(args);
+
+        try {
+            PostProcessData.main(args); // add ids and remove empty objects from data
+            String fileName = "data.json";
+			Input I = new Input();
+			Input input = I.main(fileName);
+			System.out.print(input);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -20,7 +20,7 @@ public class WebCrawler {
 	static JSONArray jsonArray = new JSONArray();
 	static WebDriverWait wait;
 
-	public static void main() {
+	public static void main(String[] args) {
 		setupWebDriver();
 		startCrawling();
 	}
