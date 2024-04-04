@@ -21,6 +21,7 @@ class Input {
 	private static final String downPayment = "price"; // in dollars
 	private static final String locationStr = "location";
 	private static final String cityStr = "city";
+	private static final String freqCount = "freqencyCount";
 	private static final List<String> validWordCompletionParameters = new ArrayList<>(
 			Arrays.asList(locationStr, cityStr));
 	private static final Scanner sc = new Scanner(System.in);
@@ -48,11 +49,9 @@ class Input {
 
 		//spell-checker starts
 		while (isIncorrectWord) {
-			if (getDecision()) {
-				data = takeInput(locationStr, "Location", fileName, spellChecker);
-//				isIncorrectWord = spellChecker.suggestWords(data);
-			} else {
-				isIncorrectWord = false;
+			if (getDecision(dataType)) {
+				data = takeInput(dataType, dataString, fileName, spellChecker);
+				isIncorrectWord = spellChecker.suggestWords(data);
 			}
 		}
 		// spell-checker end
@@ -81,7 +80,7 @@ class Input {
 				System.out.println(suggestedWord);
 			}
 			// take input again with valid value
-			if (getDecision())
+			if (getDecision(dataType))
 				return takeInput(dataType, dataString, fileName, spellChecker);
 			else 
 				return data;
@@ -89,8 +88,8 @@ class Input {
 		return data;
 	}
 
-	public static boolean getDecision() {
-		System.out.print("Do you want to update input (y/n): ");
+	public static boolean getDecision(String dataType) {
+		System.out.print(dataType.equals(freqCount) ? "Do you want to find frequency count for some other string? (y/n): " : "Do you want to update input? (y/n): " );
 		String decision = sc.nextLine();
 		if (decision.toLowerCase().equals("y")) {
 			return true;
@@ -98,7 +97,7 @@ class Input {
 			return false;
 		} else {
 			System.out.println("Invalid Input!");
-			return getDecision();
+			return getDecision(dataType);
 		}
 	}
 

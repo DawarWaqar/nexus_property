@@ -50,7 +50,7 @@ public class Main {
 //    			sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive search
     			FrequencyCount.main(args, filteredResults, searchString);
     			SearchFreq.main(args, searchString);
-    			isContinue = Input.getDecision();
+    			isContinue = Input.getDecision(freqCount);
     		}
             
             PropertyRankingByUserPreference.main(args);
