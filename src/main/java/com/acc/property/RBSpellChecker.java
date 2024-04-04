@@ -96,7 +96,7 @@ public class RBSpellChecker {
         System.out.println("");
 
         for (String word : wordsList) {
-
+            word = word.toLowerCase();
             if (containsInteger(word))
                 continue;
 

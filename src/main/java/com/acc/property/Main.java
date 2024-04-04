@@ -22,12 +22,10 @@ public class Main {
                 PostProcessData.main(args);
             } else if (isWebCrawling.toLowerCase().equals("n")) {
                 System.out.println("The program will run without web crawler now.");
-                PostProcessData.main(args);
             } else {
                 System.out.println("Invalid Input");
                 return;
             }
-            // add ids and remove empty objects from data
             String fileName = "data.json";
             Input I = new Input();
             Input input = I.main(fileName);
