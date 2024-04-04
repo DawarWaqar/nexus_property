@@ -15,6 +15,7 @@ public class Input {
 	String beds;
 	String baths;
 	String typeOfProperty;
+	String city;
 	private static final String numBedrooms = "beds";
 	private static final String numBathrooms = "baths";
 	private static final String propertyType = "propertyType"; // in dollars per month
@@ -22,6 +23,7 @@ public class Input {
 	private static final String email = "email";
 	private static final String locationStr = "location";
 	private static final String password = "password";
+	private static final String cityStr = "city";
 	private static final List<String> validWordCompletionParameters = new ArrayList<>(Arrays.asList(locationStr));
 
 	private static Scanner sc = new Scanner(System.in);
@@ -92,6 +94,7 @@ public class Input {
 		input.beds = takeInput(numBedrooms, "Number of Bedrooms", fileName);
 		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName);
 		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName);
+		input.city = takeInput(cityStr, "City", fileName);
 		input.location = takeInput(locationStr, "Location", fileName);
 
 		// spell-checker
