@@ -21,13 +21,12 @@ class Input {
 	private static final String downPayment = "price"; // in dollars
 	private static final String locationStr = "location";
 	private static final String cityStr = "city";
-	private static final String freqCount = "freqencyCount";
 	private static final List<String> validWordCompletionParameters = new ArrayList<>(
 			Arrays.asList(locationStr, cityStr));
+	private static final Scanner sc = new Scanner(System.in);
 
-	private static Scanner sc = new Scanner(System.in);
-
-	public static String takeInput(String dataType, String dataString, String fileName) {
+	public static String takeInput(String dataType, String dataString, String fileName, RBSpellChecker spellChecker) {
+		
 		DataValidation d = new DataValidation();
 		String data = "";
 		boolean dataValid = false;
@@ -45,10 +44,28 @@ class Input {
 			}
 		}
 
+		Boolean isIncorrectWord = spellChecker.suggestWords(data);
+
+		//spell-checker starts
+		while (isIncorrectWord) {
+			if (getDecision()) {
+				data = takeInput(locationStr, "Location", fileName, spellChecker);
+//				isIncorrectWord = spellChecker.suggestWords(data);
+			} else {
+				isIncorrectWord = false;
+			}
+		}
+		// spell-checker end
+
+		// Word completion if data validation is successfull
+		if (validWordCompletionParameters.contains(dataType) && data.length() != 0)
+			data = searchWordCompletion(dataType, data, dataString, fileName, spellChecker);
+		// word-completion ended
 		return data;
 	}
 
-	public static void searchWordCompletion(String dataType, String data, String dataString, String fileName) {
+	public static String searchWordCompletion(String dataType, String data, String dataString, String fileName,
+			RBSpellChecker spellChecker) {
 		// building array of values of parameter from the output file for word
 		// completion
 		ArrayList<String> parameterValues = PropertyFileReader.main(dataType, fileName);
@@ -65,8 +82,11 @@ class Input {
 			}
 			// take input again with valid value
 			if (getDecision())
-				takeInput(dataType, dataString, fileName);
+				return takeInput(dataType, dataString, fileName, spellChecker);
+			else 
+				return data;
 		}
+		return data;
 	}
 
 	public static boolean getDecision() {
@@ -82,57 +102,21 @@ class Input {
 		}
 	}
 
-	public static Input main(String[] args, String fileName) {
+	public static Input main(String[] args, String fileName, RBSpellChecker spellChecker) {
 		System.out.println(
 				"Search for a property based on below given parameters (please leave the parameters input empty if it's not decided.): ");
-		Scanner sc = new Scanner(System.in);
 		Input input = new Input();
 
+
 		// taking inputs one by one
-		input.price = takeInput(downPayment, "Price", fileName);
-		input.beds = takeInput(numBedrooms, "Number of Bedrooms", fileName);
-		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName);
-		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName);
-		input.city = takeInput(cityStr, "City", fileName);
-		input.location = takeInput(locationStr, "Location", fileName);
-
-		// spell-checker
-		RBSpellChecker spellChecker = new RBSpellChecker();
-		spellChecker.populate("english-dictionary-source-UMich.txt");
-
-		Boolean isIncorrectWord = spellChecker.suggestWords(input.location);
-
-		while (isIncorrectWord) {
-			if (getDecision()) {
-				input.location = takeInput(locationStr, "Location", fileName);
-				isIncorrectWord = spellChecker.suggestWords(input.location);
-			} else {
-				isIncorrectWord = false;
-			}
-		}
-		// spell-checker end
-
-		// Word completion if data validation is successfull
-		if (validWordCompletionParameters.contains("location") && input.location.length() != 0)
-			searchWordCompletion(locationStr, input.location, "Location", fileName);
-		if (validWordCompletionParameters.contains("city") && input.city.length() != 0)
-			searchWordCompletion(cityStr, input.city, "City", fileName);
-
-		// word-completion ended
-		// System.out.println("Start with the Search of a keyword: ");
-		// boolean isContinue = true;
-		// while (isContinue) {
-		// String searchString = takeInput(freqCount, "Input word for frequency count",
-		// fileName);
-		// // sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive
-		// search
-		// JsonNode jsonObj = null;
-		// FrequencyCount.main(args, jsonObj, searchString);
-		// SearchFreq.main(args, searchString);
-		// isContinue = getDecision();
-		// }
-
-		sc.close();
+		input.price = takeInput(downPayment, "Price", fileName, spellChecker);
+		input.beds = takeInput(numBedrooms, "Number of Bedrooms", fileName, spellChecker);
+		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName, spellChecker);
+		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName, spellChecker);
+		input.city = takeInput(cityStr, "City", fileName, spellChecker);
+		System.out.println("City: " + input.city);
+		input.location = takeInput(locationStr, "Location", fileName, spellChecker);
+//		sc.close();
 		return input;
 	}
 }

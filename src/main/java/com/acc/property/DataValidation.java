@@ -21,10 +21,6 @@ public class DataValidation {
 	private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&*!])(?=.{8,}$)|^$";
 	private static final String CITY_VALID = "^[a-zA-Z\\s-]+$|^$";
 	private static final String FREQ_COUNT_STRING = "^[a-zA-Z0-9\\s.,'-]+$";
-//  private static final String LOCATION_REGEX = "^(?=.*\\S)[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+,\\s*[\\w\\s.,'-]+[^\\s]$";
-//  private static final String SIZE_REGEX = "^[1-9]\\d*(\\.\\d+)?$";
-//  private static final String YEAR_BUILT_REGEX = "^\\d{4}$";
-//  private static final String COORDINATES_REGEX = "^-?\\d{1,3}\\.\\d{4,},\\s*-?\\d{1,3}\\.\\d{4,}$";
 
 	// Validate email
 	public static boolean validateEmail(String email) {

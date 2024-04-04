@@ -137,6 +137,7 @@ public class InvertedIndexing {
 
         try {
             index.buildIndex("data.json");
+            
 
         } catch (IOException e) {
             e.printStackTrace();
