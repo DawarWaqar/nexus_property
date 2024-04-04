@@ -1,7 +1,7 @@
 package com.acc.property;
 
+import java.util.List;
 import java.util.Scanner;
-import com.acc.property.FrequencyCount;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Main {
@@ -20,23 +20,25 @@ public class Main {
             String isWebCrawling = sc.nextLine();
             if (isWebCrawling.toLowerCase().equals("y")) {
                 runWebCrawler(args);
+                PostProcessData.main(args);
+
             } else if (isWebCrawling.toLowerCase().equals("n")) {
                 System.out.println("The program will run without web crawler now.");
             } else {
                 System.out.println("Invalid Input");
                 return;
             }
-            // PostProcessData.main(args);
 
             String fileName = "data.json";
-			Input I = new Input();
-			Input input = I.main(args, fileName);
+            Input I = new Input();
+            Input input = I.main(args, fileName);
 
-			sc.close();
+            sc.close();
 
             // inverted-indexing
             InvertedIndexing index = new InvertedIndexing();
-            index.searchByUserInput(input);
+            index.buildIndex("data.json");
+            List<JsonNode> filteredResults = index.searchByUserInput(input); // for aashma, you are very welcome:)
 
         } catch (Exception e) {
             e.printStackTrace();

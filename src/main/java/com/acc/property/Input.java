@@ -19,12 +19,11 @@ class Input {
 	private static final String numBathrooms = "baths";
 	private static final String propertyType = "propertyType"; // in dollars per month
 	private static final String downPayment = "price"; // in dollars
-	private static final String email = "email";
 	private static final String locationStr = "location";
-	private static final String password = "password";
 	private static final String cityStr = "city";
 	private static final String freqCount = "freqencyCount";
-	private static final List<String> validWordCompletionParameters = new ArrayList<>(Arrays.asList(locationStr, cityStr));
+	private static final List<String> validWordCompletionParameters = new ArrayList<>(
+			Arrays.asList(locationStr, cityStr));
 
 	private static Scanner sc = new Scanner(System.in);
 
@@ -120,16 +119,18 @@ class Input {
 			searchWordCompletion(cityStr, input.city, "City", fileName);
 
 		// word-completion ended
-		System.out.println("Start with the Search of a keyword: ");
-		boolean isContinue = true;
-		while (isContinue) {
-			String searchString = takeInput(freqCount, "Input word for frequency count", fileName);
-//			sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive search
-			JsonNode jsonObj = null;
-			FrequencyCount.main(args, jsonObj, searchString);
-			SearchFreq.main(args, searchString);
-			isContinue = getDecision();
-		}
+		// System.out.println("Start with the Search of a keyword: ");
+		// boolean isContinue = true;
+		// while (isContinue) {
+		// String searchString = takeInput(freqCount, "Input word for frequency count",
+		// fileName);
+		// // sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive
+		// search
+		// JsonNode jsonObj = null;
+		// FrequencyCount.main(args, jsonObj, searchString);
+		// SearchFreq.main(args, searchString);
+		// isContinue = getDecision();
+		// }
 
 		sc.close();
 		return input;

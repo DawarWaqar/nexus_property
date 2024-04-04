@@ -2,6 +2,7 @@ package com.acc.property;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,8 +55,8 @@ public class InvertedIndexing {
         }
     }
 
-    public Set<String> search(Map<String, Object> filters) {
-        Set<String> result = null;
+    public List<JsonNode> search(Map<String, Object> filters) {
+        List<JsonNode> resultList = new ArrayList<>();
         boolean first = true;
 
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
@@ -81,39 +82,53 @@ public class InvertedIndexing {
             // Perform intersection with previous results or initialize result set
             if (ids != null) {
                 if (first) {
-                    result = new HashSet<>(ids);
+                    resultList.addAll(ids.stream()
+                            .map(id -> listingMap.get(id))
+                            .collect(Collectors.toList()));
                     first = false;
                 } else {
-                    result.retainAll(ids);
+                    resultList.retainAll(ids.stream()
+                            .map(id -> listingMap.get(id))
+                            .collect(Collectors.toList()));
                 }
             }
-        }
 
-        if (result != null && !result.isEmpty()) {
-            // Output the matching listings
-            System.out.println("Matching listings:");
-            for (String id : result) {
-                JsonNode listing = listingMap.get(id);
-                System.out.println(listing);
+            if (!resultList.isEmpty()) {
+                System.out.println("Matching listings:\n");
+                for (JsonNode listing : resultList) {
+                    System.out.println(listing);
+                }
+            } else {
+                System.out.println("No matching listings found.");
             }
-        } else {
-            System.out.println("No matching listings found.");
         }
 
-        return result != null ? result : Collections.emptySet();
+        return resultList;
     }
 
-    public void searchByUserInput(Input userInput) {
+    public List<JsonNode> searchByUserInput(Input userInput) {
         Map<String, Object> filters = new HashMap<>();
-        filters.put("baths", userInput.baths);
-        filters.put("city", userInput.city);
-        filters.put("price", userInput.price);
-        filters.put("propertyType", userInput.typeOfProperty);
-        filters.put("location", userInput.location);
-        filters.put("beds", userInput.beds);
 
-        Set<String> matchingIds = search(filters);
-        System.out.println("Matching listing IDs: " + matchingIds);
+        if (!userInput.baths.isEmpty()) {
+            filters.put("baths", userInput.baths);
+        }
+        if (!userInput.city.isEmpty()) {
+            filters.put("city", userInput.city);
+        }
+        if (!userInput.price.isEmpty()) {
+            filters.put("price", userInput.price);
+        }
+        if (!userInput.typeOfProperty.isEmpty()) {
+            filters.put("propertyType", userInput.typeOfProperty);
+        }
+        if (!userInput.location.isEmpty()) {
+            filters.put("location", userInput.location);
+        }
+        if (!userInput.beds.isEmpty()) {
+            filters.put("beds", userInput.beds);
+        }
+
+        return search(filters);
 
     }
 
@@ -123,11 +138,6 @@ public class InvertedIndexing {
         try {
             index.buildIndex("data.json");
 
-            // Map<String, Object> filters = new HashMap<>();
-            // filters.put("baths", "2");
-            // filters.put("price", "15.5");
-            // Set<String> matchingIds = index.search(filters);
-            // System.out.println("Matching listing IDs: " + matchingIds);
         } catch (IOException e) {
             e.printStackTrace();
         }
