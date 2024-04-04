@@ -47,6 +47,7 @@ public class Main {
 
             String fileName = "data.json";
 			Input I = new Input();
+			System.out.println();
 			Input input = I.main(args, fileName, spellChecker);
 
             // inverted-indexing
@@ -54,16 +55,22 @@ public class Main {
             index.buildIndex("data.json");
             List<JsonNode> filteredResults = index.searchByUserInput(input);
             
-            System.out.println("Start with the Search of a keyword: ");
+            // search frequency and frequency count  
+            if (filteredResults.size() != 0) {
+    		System.out.println();
+    		System.out.println("Start with the Search of a keyword: ");
     		boolean isContinue = true;
-    		while (isContinue) {
+    		while (isContinue) {    
     			String searchString = Input.takeInput(freqCount, "Input word for frequency count", fileName, spellChecker);
-//    			sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive search
     			FrequencyCount.main(args, filteredResults, searchString);
     			SearchFreq.main(args, searchString);
     			isContinue = Input.getDecision(freqCount);
     		}
-            
+            }
+    		// end of search frequency and frequency count
+    		
+            System.out.println();
+    		System.out.println("Steps for page ranking will be calculated based on number of bads and baths in a property: ");
             PropertyRankingByUserPreference.main(args);
 
 			sc.close();
