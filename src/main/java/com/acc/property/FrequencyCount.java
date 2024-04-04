@@ -33,7 +33,6 @@ public class FrequencyCount {
 				listing.fields().forEachRemaining(entry -> {
 					String[] str = entry.getValue().toString().toLowerCase().replace("\"", "").split("[\\s,]+");
 					for (String s: str) {
-						System.out.println(s);
 					// Incrementing the frequency count of the string
 					frequencyMap.put(s, frequencyMap.getOrDefault(s, 0) + 1);
 					}
