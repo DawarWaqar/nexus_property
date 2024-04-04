@@ -55,6 +55,9 @@ class Input {
 				data = takeInput(dataType, dataString, fileName, spellChecker);
 				isIncorrectWord = spellChecker.suggestWords(data);
 			}
+			else {
+				isIncorrectWord = false;
+			}
 		}
 		// spell-checker end
 
@@ -86,6 +89,9 @@ class Input {
 				return takeInput(dataType, dataString, fileName, spellChecker);
 			else
 				return data;
+		}
+		else {
+			System.out.println("No word completion words were found!");
 		}
 		return data;
 	}

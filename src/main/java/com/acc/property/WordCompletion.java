@@ -109,6 +109,7 @@ public class WordCompletion {
 
 	public static List<String> main(ArrayList<String> args, String ag_prefix) {
 		WordCompletion ag_trie = new WordCompletion(args);
+		System.out.println("Checking for Word Completion: ");
 		List<String> ag_complete_suggestion = ag_trie.ag_suggest_k(ag_prefix.toLowerCase());
 		return ag_complete_suggestion;
 
