@@ -93,14 +93,14 @@ public class InvertedIndexing {
                 }
             }
 
-            if (!resultList.isEmpty()) {
-                System.out.println("Matching listings:\n");
-                for (JsonNode listing : resultList) {
-                    System.out.println(listing);
-                }
-            } else {
-                System.out.println("No matching listings found.");
+        }
+        if (!resultList.isEmpty()) {
+            System.out.println("Matching listings:\n");
+            for (JsonNode listing : resultList) {
+                System.out.println(listing);
             }
+        } else {
+            System.out.println("No matching listings found.");
         }
 
         return resultList;
