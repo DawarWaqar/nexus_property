@@ -44,13 +44,13 @@ public class WebCrawler {
 				Thread.sleep(2000); // Adding a wait for page load
 				switch (website) {
 				case "point2homes":
-					Crawlp2h(url,"on/windsor");
+					Crawlp2h(url,"on");
 					break;
 				case "remax":
-					CrawlRemax(url, "on/windsor");
+					CrawlRemax(url, "on");
 					break;
 				case "propertyguys":
-					CrawlPropertyGuys(url, "on/windsor");
+					CrawlPropertyGuys(url, "on");
 					break;
 				}
 			}
@@ -73,7 +73,7 @@ public class WebCrawler {
 	{
 		switch (website) {
 		case "point2homes":
-			return String.format("https://www.point2homes.com/CA/Real-Estate-Listings/ON/Windsor.html");
+			return String.format("https://www.point2homes.com/CA/Real-Estate-Listings/ON.html");
 		case "remax":
 			return String.format("https://www.remax.ca/");
 		case "realtor":
@@ -151,7 +151,7 @@ public class WebCrawler {
 	//************************************ Point2Homes.com ************************************
 	public static void Crawlp2h(String defaultUrl, String location) {
 		try {
-
+			System.out.println("*********************************");
 			driver.get(defaultUrl);
 			Thread.sleep(2000); // Adding a wait for page load
 			// Wait for the listings to load
@@ -161,25 +161,18 @@ public class WebCrawler {
 			for (WebElement item : items) {
 				JSONObject itemObject = new JSONObject();
 				try {
-
-					//					String dataAddressValue = GetaddressValue(item);
-					// Find the div containing the property address
-					WebElement addressContainerDiv = driver.findElement(By.className("address-container"));
-
-					// Extract the full address text
-					String fullAddress = addressContainerDiv.getText().trim();
-
+					String dataAddress = item.findElement(By.className("address-container")).getAttribute("data-address");
+		
 					// Split the full address into street address, city, and province
-					String[] addressParts = fullAddress.split(",\\s*", 3); // Split on comma and optional whitespace
+					String[] addressParts = dataAddress.split(",\\s*", 3); // Split on comma and optional whitespace
 					String streetAddress = addressParts[0];
 					String city = addressParts[1];
-					String province = addressParts[2];
+					System.out.println(city);
 
 					String bedValue = GetBedsValue(item);
 					String bathsValue = GetBathsValue(item);
 					String propertyType = GetPropertyTypeValue(item);
 					String priceValue = GetPriceValue(item);
-					String imageSrc = GetImageVlue(item);
 
 					// Find the <div> element with the specified class name
 					WebElement openHouseElement = item.findElement(By.cssSelector("div.open-house-right"));
@@ -187,16 +180,12 @@ public class WebCrawler {
 					WebElement openHouseInfoElement = openHouseElement.findElement(By.cssSelector("div.open-house-line"));
 					String [] DayDateTime = GetDayDateTime(openHouseInfoElement);
 
-					// Output the extracted components
-					itemObject.put("location",  String.format("%s,%s,%s", streetAddress, city,province));
-					itemObject.put("city", city);
-					itemObject.put("province", province);
+					itemObject.put("location",  dataAddress.toLowerCase());
+					itemObject.put("city", city.toLowerCase());
 					itemObject.put("beds", bedValue);
 					itemObject.put("baths", bathsValue);
-					itemObject.put("propertyType", propertyType);
+					itemObject.put("propertyType", propertyType.toLowerCase());
 					itemObject.put("price", priceValue);
-					itemObject.put("imageSrc", imageSrc);
-					itemObject.put("image", imageSrc);
 					jsonArray.add(itemObject);
 
 				} catch (org.openqa.selenium.NoSuchElementException e) {
@@ -215,8 +204,9 @@ public class WebCrawler {
 	public static void CrawlRemax(String defaultUrl, String location) {
 
 		try {
+			System.out.println("*********************************");
 			for(int i=0; i<4 ; i++) {
-				String Url = String.format("%s/%s-real-estate?pageNumber=%s",defaultUrl,location,i+1);
+				String Url = String.format("%s/%s?pageNumber=%s",defaultUrl,location,i+1);
 				driver.get(Url);
 				Thread.sleep(2000);
 				List<WebElement> listingCards = driver.findElements(By.cssSelector("[data-testid='listing-card']"));
@@ -233,37 +223,28 @@ public class WebCrawler {
 					String bed = bedElement.getText();
 					String bath = bathElement.getText();
 
-					// Find the div containing the property address
-					WebElement propertyAddressDiv = driver.findElement(By.cssSelector("[data-cy='property-address']"));
+					WebElement propertyAddressElement = listingCard.findElement(By.cssSelector("[data-cy='property-address']"));
 
-					// Extract the street address
-					String streetAddress = propertyAddressDiv.findElement(By.tagName("span")).getText().trim();
+			        // Get the text content of the element
+			        String propertyAddress = propertyAddressElement.getText();
+			        // Split the text content to separate address and city/province
+			        String[] addressParts = propertyAddress.split(", ");
+			        String address = addressParts[0]; // Extracting the address part
+			        String cityProvince = addressParts[1]; // Extracting the city and province part
 
-					// Extract the city and province
-					String cityProvince = propertyAddressDiv.findElement(By.xpath("//span[2]")).getText().trim();
-
-					// Split the cityProvince into city and province
-					String[] cityProvinceParts = cityProvince.split(",\\s*", 2); // Split on comma and optional whitespace
-					String city = null;
-					String province = null;
-					if(cityProvinceParts!=null && cityProvinceParts.length ==2){
-					city = cityProvinceParts[0];
-					province = cityProvinceParts[1];
-					}
-
-					// Find the img element
-					WebElement imgElement = listingCard.findElement(By.tagName("img"));
-					// Extract the value of the src attribute
-					String srcValue = imgElement.getAttribute("src");
-
-					itemObject.put("location",  String.format("%s,%s", streetAddress, cityProvince));
-					itemObject.put("city", city);
-					itemObject.put("province", province);
+			        // Split cityProvince to separate city and province
+			        String[] cityProvinceParts = cityProvince.split(" ");
+			        String city = cityProvinceParts[0]; // Extracting the city
+			        if(cityProvinceParts.length>1) {
+			        	String province = cityProvinceParts[1]; // Extracting the province
+			        }
+			        
+					itemObject.put("location",  propertyAddress.toLowerCase());
+					itemObject.put("city", city.toLowerCase());
 					itemObject.put("beds", bed);
 					itemObject.put("baths", bath);
 					itemObject.put("propertyType", "residential");
 					itemObject.put("price", price);
-					itemObject.put("image", srcValue);
 					jsonArray.add(itemObject);
 				}
 			}
@@ -284,8 +265,6 @@ public class WebCrawler {
 
 		// Find all divs with class "listing-container" within listingListDiv
 		List<WebElement> listingContainers = listingListDiv.findElements(By.className("listing-container"));
-		System.out.println(listingContainers.size());
-
 		// Loop through each listing-container
 		for (WebElement container : listingContainers) {
 			// Extract data
@@ -296,21 +275,17 @@ public class WebCrawler {
 			String cityProvince = container.findElement(By.className("city-province")).getText().trim();
 			String[] cityProvinceArray = cityProvince.split(",\\s*", 2); // Split on comma and optional whitespace
 			String city = cityProvinceArray[0];
-			String province = cityProvinceArray[1];
 
 			String price = container.findElement(By.className("price")).getText().trim();
-			String listingPhoto = container.findElement(By.className("listing-photo")).getAttribute("src");
 
 			// Create a JSONObject for current listing
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("location", String.format("%s%s", street, cityProvince));
-			jsonObject.put("city", city);
-			jsonObject.put("province", province);
+			jsonObject.put("location", String.format("%s%s", street, cityProvince).toLowerCase());
+			jsonObject.put("city", city.toLowerCase());
 			jsonObject.put("beds", bedroom);
 			jsonObject.put("baths", bathroom);
 			jsonObject.put("propertyType", "residential");
 			jsonObject.put("price", price);
-			jsonObject.put("image", listingPhoto);
 
 			// Add the JSONObject to the JSONArray
 			jsonArray.add(jsonObject);
