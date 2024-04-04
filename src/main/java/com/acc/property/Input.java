@@ -44,10 +44,6 @@ public class Input {
 			}
 		}
 
-		// Word completion if data validation is successfull
-		if (validWordCompletionParameters.contains(dataType) && data.length() != 0)
-			searchWordCompletion(dataType, data, dataString, fileName);
-
 		return data;
 	}
 
@@ -73,7 +69,7 @@ public class Input {
 	}
 
 	public static boolean getDecision() {
-		System.out.print("Do you want to update the input (y/n): ");
+		System.out.print("Do you want to update location (y/n): ");
 		String decision = sc.nextLine();
 		if (decision.toLowerCase().equals("y")) {
 			return true;
@@ -92,12 +88,35 @@ public class Input {
 		Input input = new Input();
 
 		// taking inputs one by one
-		input.location = takeInput(locationStr, "Location", fileName);
 		input.price = takeInput(downPayment, "Price", fileName);
 		input.beds = takeInput(numBedrooms, "Number of Bedrooms", fileName);
 		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName);
 		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName);
+		input.location = takeInput(locationStr, "Location", fileName);
 
+		// spell-checker
+		RBSpellChecker spellChecker = new RBSpellChecker();
+		spellChecker.populate("english-dictionary-source-UMich.txt");
+
+		Boolean isIncorrectWord = spellChecker.suggestWords(input.location);
+
+		while (isIncorrectWord) {
+			if (getDecision()) {
+				input.location = takeInput(locationStr, "Location", fileName);
+				isIncorrectWord = spellChecker.suggestWords(input.location);
+			} else {
+				isIncorrectWord = false;
+			}
+		}
+		// spell-checker end
+
+		// word-completion started
+
+		// Word completion if data validation is successfull
+		if (validWordCompletionParameters.contains("location") && input.location.length() != 0)
+			searchWordCompletion(locationStr, input.location, "Location", fileName);
+
+		// word-completion ended
 		sc.close();
 		return input;
 	}

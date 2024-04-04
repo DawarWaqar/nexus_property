@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class PostProcessData {
 
-    public static void processProperties(String filePath) throws IOException {
+    public static void processProperties(String filePath) throws Exception {
 
         try {
             // Step 1: Read the JSON file and parse it into a JsonNode
@@ -36,16 +36,14 @@ public class PostProcessData {
 
             System.out.println("Post processing completeted");
         } catch (FileNotFoundException e) {
-            System.err.println("Error: The JSON file does not exist.");
-            System.exit(1); // Exit with error code 1
+            throw new Exception("Oops! The JSON file (data.json) does not exist");
         } catch (IOException e) {
-            System.err.println("Error processing JSON file.");
-            System.exit(1); // Exit with error code 1
+            throw new Exception("Oops! Error processing JSON file");
         }
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         processProperties("data.json");
     }
 }
