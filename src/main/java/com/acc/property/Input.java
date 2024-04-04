@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import com.acc.property.FrequencyCount;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class Input {
+class Input {
 
 	String location;
 	String price;
@@ -21,7 +23,8 @@ public class Input {
 	private static final String locationStr = "location";
 	private static final String password = "password";
 	private static final String cityStr = "city";
-	private static final List<String> validWordCompletionParameters = new ArrayList<>(Arrays.asList(locationStr));
+	private static final String freqCount = "freqencyCount";
+	private static final List<String> validWordCompletionParameters = new ArrayList<>(Arrays.asList(locationStr, cityStr));
 
 	private static Scanner sc = new Scanner(System.in);
 
@@ -68,7 +71,7 @@ public class Input {
 	}
 
 	public static boolean getDecision() {
-		System.out.print("Do you want to update location (y/n): ");
+		System.out.print("Do you want to update input (y/n): ");
 		String decision = sc.nextLine();
 		if (decision.toLowerCase().equals("y")) {
 			return true;
@@ -80,7 +83,7 @@ public class Input {
 		}
 	}
 
-	public static Input main(String fileName) {
+	public static Input main(String[] args, String fileName) {
 		System.out.println(
 				"Search for a property based on below given parameters (please leave the parameters input empty if it's not decided.): ");
 		Scanner sc = new Scanner(System.in);
@@ -113,6 +116,20 @@ public class Input {
 		// Word completion if data validation is successfull
 		if (validWordCompletionParameters.contains("location") && input.location.length() != 0)
 			searchWordCompletion(locationStr, input.location, "Location", fileName);
+		if (validWordCompletionParameters.contains("city") && input.city.length() != 0)
+			searchWordCompletion(cityStr, input.city, "City", fileName);
+
+		// word-completion ended
+		System.out.println("Start with the Search of a keyword: ");
+		boolean isContinue = true;
+		while (isContinue) {
+			String searchString = takeInput(freqCount, "Input word for frequency count", fileName);
+//			sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive search
+			JsonNode jsonObj = null;
+			FrequencyCount.main(args, jsonObj, searchString);
+			SearchFreq.main(args, searchString);
+			isContinue = getDecision();
+		}
 
 		sc.close();
 		return input;

@@ -7,49 +7,49 @@ import java.util.Map;
 
 public class WordCompletion {
 
-	public class TrieNode {
-		Map<Character, TrieNode> children;
-		char c;
-		boolean isWord;
+	public class AG_Trie {
+		Map<Character, AG_Trie> ag_ward;
+		char ag_char;
+		boolean ag_str_word;
 
-		public TrieNode(char c) {
-			this.c = c;
-			children = new HashMap<>();
+		public AG_Trie(char ag_char) {
+			this.ag_char = ag_char;
+			ag_ward = new HashMap<>();
 		}
 
-		public TrieNode() {
-			children = new HashMap<>();
+		public AG_Trie() {
+			ag_ward = new HashMap<>();
 		}
 
-		public void insert(String word) {
-			if (word == null || word.isEmpty())
+		public void ag_add_insert(String ag_char_string) {
+			if (ag_char_string == null || ag_char_string.isEmpty())
 				return;
-			char firstChar = word.charAt(0);
-			TrieNode child = children.get(firstChar);
-			if (child == null) {
-				child = new TrieNode(firstChar);
-				children.put(firstChar, child);
+			char ag_starting_char = ag_char_string.charAt(0);
+			AG_Trie ag_child = ag_ward.get(ag_starting_char);
+			if (ag_child == null) {
+				ag_child = new AG_Trie(ag_starting_char);
+				ag_ward.put(ag_starting_char, ag_child);
 			}
 
-			if (word.length() > 1)
-				child.insert(word.substring(1));
+			if (ag_char_string.length() > 1)
+				ag_child.ag_add_insert(ag_char_string.substring(1));
 			else
-				child.isWord = true;
+				ag_child.ag_str_word = true;
 		}
 
 	}
 
-	TrieNode root;
+	AG_Trie ag_root;
 
-	public WordCompletion(List<String> words) {
-		root = new TrieNode();
-		for (String word : words) {
-			if (word != null) {
-				root.insert(word.toLowerCase());
-				root.insert(removeLeadingNumbers(word.toLowerCase()));
-				String[] wordSubArray = word.split(",");
+	public WordCompletion(List<String> ag_words) {
+		ag_root = new AG_Trie();
+		for (String ag_char_string : ag_words) {
+			if (ag_char_string != null) {
+				ag_root.ag_add_insert(ag_char_string.toLowerCase());
+				ag_root.ag_add_insert(removeLeadingNumbers(ag_char_string.toLowerCase()));
+				String[] wordSubArray = ag_char_string.split(",");
 				for (String subWord : wordSubArray) {
-					root.insert(removeLeadingNumbers(subWord.toLowerCase().trim()));
+					ag_root.ag_add_insert(removeLeadingNumbers(subWord.toLowerCase().trim()));
 				}
 			}
 		}
@@ -65,52 +65,52 @@ public class WordCompletion {
 	        return result;
 	    }
 
-	public boolean find(String prefix, boolean exact) {
-		TrieNode lastNode = root;
-		for (char c : prefix.toCharArray()) {
-			lastNode = lastNode.children.get(c);
+	public boolean af_find(String ag_prefix, boolean exact) {
+		AG_Trie lastNode = ag_root;
+		for (char ag_char : ag_prefix.toCharArray()) {
+			lastNode = lastNode.ag_ward.get(ag_char);
 			if (lastNode == null)
 				return false;
 		}
-		return !exact || lastNode.isWord;
+		return !exact || lastNode.ag_str_word;
 	}
 
-	public boolean find(String prefix) {
-		return find(prefix, false);
+	public boolean af_find(String ag_prefix) {
+		return af_find(ag_prefix, false);
 	}
 
-	public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr, String prefix) {
-		if (root.isWord && !curr.toString().equals(prefix)) {
-			list.add(curr.toString());
+	public void ag_suggest_same_words(AG_Trie ag_root, List<String> ag_l_list, StringBuffer ag_current_node, String ag_prefix) {
+		if (ag_root.ag_str_word && !ag_current_node.toString().equals(ag_prefix)) {
+			ag_l_list.add(ag_current_node.toString());
 		}
 
-		if (root.children == null || root.children.isEmpty())
+		if (ag_root.ag_ward == null || ag_root.ag_ward.isEmpty())
 			return;
 
-		for (TrieNode child : root.children.values()) {
-			suggestHelper(child, list, curr.append(child.c), prefix);
-			curr.setLength(curr.length() - 1);
+		for (AG_Trie ag_child : ag_root.ag_ward.values()) {
+			ag_suggest_same_words(ag_child, ag_l_list, ag_current_node.append(ag_child.ag_char), ag_prefix);
+			ag_current_node.setLength(ag_current_node.length() - 1);
 		}
 	}
 
-	public List<String> suggest(String prefix) {
-		List<String> list = new ArrayList<>();
-		TrieNode lastNode = root;
-		StringBuffer curr = new StringBuffer();
-		for (char c : prefix.toCharArray()) {
-			lastNode = lastNode.children.get(c);
+	public List<String> ag_suggest_k(String ag_prefix) {
+		List<String> ag_l_list = new ArrayList<>();
+		AG_Trie lastNode = ag_root;
+		StringBuffer ag_current_node = new StringBuffer();
+		for (char ag_char : ag_prefix.toCharArray()) {
+			lastNode = lastNode.ag_ward.get(ag_char);
 			if (lastNode == null)
-				return list;
-			curr.append(c);
+				return ag_l_list;
+			ag_current_node.append(ag_char);
 		}
-		suggestHelper(lastNode, list, curr, prefix);
-		return list;
+		ag_suggest_same_words(lastNode, ag_l_list, ag_current_node, ag_prefix);
+		return ag_l_list;
 	}
 
-	public static List<String> main(ArrayList<String> args, String prefix) {
-		WordCompletion trie = new WordCompletion(args);
-		List<String> completions = trie.suggest(prefix.toLowerCase());
-		return completions;
+	public static List<String> main(ArrayList<String> args, String ag_prefix) {
+		WordCompletion ag_trie = new WordCompletion(args);
+		List<String> ag_complete_suggestion = ag_trie.ag_suggest_k(ag_prefix.toLowerCase());
+		return ag_complete_suggestion;
 
 	}
 

@@ -1,6 +1,8 @@
 package com.acc.property;
 
 import java.util.Scanner;
+import com.acc.property.FrequencyCount;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class Main {
 
@@ -27,9 +29,10 @@ public class Main {
             // PostProcessData.main(args);
 
             String fileName = "data.json";
-            Input I = new Input();
-            Input input = I.main(fileName);
-            System.out.print(input);
+			Input I = new Input();
+			Input input = I.main(args, fileName);
+
+			sc.close();
 
             // inverted-indexing
             InvertedIndexing index = new InvertedIndexing();

@@ -119,22 +119,15 @@ public class SearchFreq {
 	        }
 		}
 	}	
-	public static void main(String[] args) {
+	public static void main(String[] args, String searchKeyword) {
 		List <String> resultlist=new ArrayList<>();
 		SearchFreq sf=new SearchFreq();
 		sf.loadfromfile("search_history.his");
-		/*
-		sf.addsearchword("london");
-		sf.addsearchword("windsor");
-		sf.addsearchword("canada");
-		sf.addsearchword("canada");
-		sf.addsearchword("london");
-		sf.addsearchword("london");	*/
+		
+		sf.addsearchword(searchKeyword);
 
 		
-		resultlist=sf.getAllSearchTimes("");
-		System.out.println(resultlist);
-		System.out.println("word:canada     times="+sf.getKeywordSearchTimes("canada"));
+		System.out.println("Word:" + searchKeyword +" times="+sf.getKeywordSearchTimes(searchKeyword));
 		sf.savetofile("search_history.his");
 
 	}
