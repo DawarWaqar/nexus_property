@@ -61,7 +61,7 @@ class Input {
 		if (validWordCompletionParameters.contains(dataType) && data.length() != 0)
 			data = searchWordCompletion(dataType, data, dataString, fileName, spellChecker);
 		// word-completion ended
-		return data;
+		return data.toLowerCase();
 	}
 
 	public static String searchWordCompletion(String dataType, String data, String dataString, String fileName,
@@ -114,7 +114,6 @@ class Input {
 		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName, spellChecker);
 		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName, spellChecker);
 		input.city = takeInput(cityStr, "City", fileName, spellChecker);
-		System.out.println("City: " + input.city);
 		input.location = takeInput(locationStr, "Location", fileName, spellChecker);
 //		sc.close();
 		return input;

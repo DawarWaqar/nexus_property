@@ -48,8 +48,7 @@ public class Main {
     		while (isContinue) {
     			String searchString = Input.takeInput(freqCount, "Input word for frequency count", fileName, spellChecker);
 //    			sc.nextLine().toLowerCase(); // Convert to lowercase for case-insensitive search
-    			JsonNode jsonObj = null;
-    			FrequencyCount.main(args, jsonObj, searchString);
+    			FrequencyCount.main(args, filteredResults, searchString);
     			SearchFreq.main(args, searchString);
     			isContinue = Input.getDecision();
     		}
