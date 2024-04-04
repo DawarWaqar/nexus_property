@@ -107,19 +107,35 @@ public class RBSpellChecker {
         return matcher.find();
     }
 
+    public static boolean isIntegerOrFloat(String str) {
+        Pattern pattern = Pattern.compile("\\d+(\\.\\d+)?");
+        Matcher matcher = pattern.matcher(str);
+        return matcher.matches();
+    }
+
     // Method to suggest words for misspelled words in an input string
     public boolean suggestWords(String input) {
         List<String> wordsList = splitWords(input);
         List<String> incorrectWords = new ArrayList<>();
+        System.out.println();
 
         // Iterate through the words in the input
         for (String word : wordsList) {
             word = word.replaceAll("^[.,]+", "").replaceAll("[.,]+$", "");
             word = word.toLowerCase(); // Convert word to lowercase for case-insensitive comparison
 
-            // Skip the word if it contains an integer
-            if (containsInteger(word))
+            //if only integer
+            if (isIntegerOrFloat(word))
                 continue;
+
+            // if contains an integer
+            if (containsInteger(word)) {
+                System.err.println("Wrong spelling for: " + word);
+                incorrectWords.add(word);
+                System.out.println();
+                continue;
+
+            }
 
             // Check if the word is not in the dictionary
             if (!rbDict.contains(word)) {

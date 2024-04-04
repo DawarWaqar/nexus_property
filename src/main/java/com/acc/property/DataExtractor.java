@@ -62,8 +62,6 @@ public class DataExtractor {
     }
 
     public static void main(String[] args) {
-        String price = fetchPrice("$4,000,000");
-        System.out.println(price);
 
     }
 }

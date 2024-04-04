@@ -31,7 +31,7 @@ public class PostProcessData {
                     // Append ID to non-empty object
                     ((ObjectNode) propertyNode).put("id", Integer.toString(idCounter++));
 
-                    // Update baths, price, beds using funcA
+                    // Update baths, price, beds
                     String updatedBaths = DataExtractor.patternMatch(propertyNode.get("baths").textValue(),
                             "fetchFirstNumber");
                     String updatedPrice = DataExtractor.patternMatch(propertyNode.get("price").textValue(), "price");
@@ -44,12 +44,12 @@ public class PostProcessData {
                 }
             }
 
-            // Step 3: Write the modified JsonNode back to the same JSON file
-            objectMapper.writeValue(new File(filePath), rootNode);
+            // Step 3: Write the modified JsonNode back to the new JSON file
+            objectMapper.writeValue(new File("processedData.json"), rootNode);
 
             System.out.println("Post processing completeted");
         } catch (FileNotFoundException e) {
-            throw new Exception("Oops! The JSON file (data.json) does not exist");
+            throw new Exception("Oops! The JSON file (processedData.json) does not exist");
         } catch (IOException e) {
             throw new Exception("Oops! Error processing JSON file");
         }

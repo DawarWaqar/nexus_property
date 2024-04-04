@@ -12,16 +12,18 @@ import java.util.PriorityQueue;
 public class PropertyRankingByUserPreference {
 
     public static void main(String[] args, RBSpellChecker spellChecker) {
-    	String filePath = "data.json"; // Adjust the path to your JSON file
-        int userBeds = Integer.parseInt(Input.takeInput("rankingbeds", "Enter the number of beds you want", filePath, spellChecker));
-        int userBaths =Integer.parseInt(Input.takeInput("rankingbaths", "Enter the number of baths you want", filePath, spellChecker));;
-        
+        String filePath = "processedData.json"; // Adjust the path to your JSON file
+        int userBeds = Integer
+                .parseInt(Input.takeInput("rankingbeds", "Enter the number of beds you want", filePath, spellChecker));
+        int userBaths = Integer.parseInt(
+                Input.takeInput("rankingbaths", "Enter the number of baths you want", filePath, spellChecker));
+        ;
+
         try {
             List<PropertyListing> listings = loadListings(filePath);
 
             PriorityQueue<PropertyListing> queue = new PriorityQueue<>(
-                (l1, l2) -> Integer.compare(l2.getRelevanceScore(), l1.getRelevanceScore())
-            );
+                    (l1, l2) -> Integer.compare(l2.getRelevanceScore(), l1.getRelevanceScore()));
 
             for (PropertyListing listing : listings) {
                 listing.setRelevanceScore(calculateRelevanceScore(listing, userBeds, userBaths));
@@ -30,7 +32,8 @@ public class PropertyRankingByUserPreference {
 
             while (!queue.isEmpty()) {
                 PropertyListing listing = queue.poll();
-                System.out.println("ID: " + listing.getId() + ", Beds: " + listing.getBeds() + ", Baths: " + listing.getBaths() + ", Relevance Score: " + listing.getRelevanceScore());
+                System.out.println("ID: " + listing.getId() + ", Beds: " + listing.getBeds() + ", Baths: "
+                        + listing.getBaths() + ", Relevance Score: " + listing.getRelevanceScore());
             }
         } catch (IOException e) {
             System.out.println("An error occurred while processing the file: " + e.getMessage());
@@ -42,8 +45,10 @@ public class PropertyRankingByUserPreference {
         int beds = listing.extractNumber(listing.getBeds());
         int baths = listing.extractNumber(listing.getBaths());
 
-        if (beds == userBeds) score++;
-        if (baths == userBaths) score++;
+        if (beds == userBeds)
+            score++;
+        if (baths == userBaths)
+            score++;
 
         return score;
     }
@@ -51,7 +56,8 @@ public class PropertyRankingByUserPreference {
     private static List<PropertyListing> loadListings(String filePath) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return objectMapper.readValue(new File(filePath), new TypeReference<List<PropertyListing>>() {});
+        return objectMapper.readValue(new File(filePath), new TypeReference<List<PropertyListing>>() {
+        });
     }
 
     static class PropertyListing {
@@ -61,7 +67,8 @@ public class PropertyRankingByUserPreference {
         private int relevanceScore; // Added field for sorting
 
         public int extractNumber(String text) {
-            if (text == null || text.isEmpty() || text.equalsIgnoreCase("n/a")) return 0;
+            if (text == null || text.isEmpty() || text.equalsIgnoreCase("n/a"))
+                return 0;
             String[] parts = text.split(" ");
             try {
                 return Integer.parseInt(parts[0]);
@@ -71,14 +78,36 @@ public class PropertyRankingByUserPreference {
         }
 
         // Getters and setters
-        public String getBeds() { return beds; }
-        public String getBaths() { return baths; }
-        public int getId() { return id; }
-        public int getRelevanceScore() { return relevanceScore; }
+        public String getBeds() {
+            return beds;
+        }
 
-        public void setBeds(String beds) { this.beds = beds; }
-        public void setBaths(String baths) { this.baths = baths; }
-        public void setId(int id) { this.id = id; }
-        public void setRelevanceScore(int relevanceScore) { this.relevanceScore = relevanceScore; }
+        public String getBaths() {
+            return baths;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getRelevanceScore() {
+            return relevanceScore;
+        }
+
+        public void setBeds(String beds) {
+            this.beds = beds;
+        }
+
+        public void setBaths(String baths) {
+            this.baths = baths;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setRelevanceScore(int relevanceScore) {
+            this.relevanceScore = relevanceScore;
+        }
     }
 }

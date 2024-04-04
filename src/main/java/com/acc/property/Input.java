@@ -47,15 +47,14 @@ class Input {
 			}
 		}
 
+		// spell-checker starts
 		Boolean isIncorrectWord = spellChecker.suggestWords(data);
 
-		// spell-checker starts
 		while (isIncorrectWord) {
 			if (getDecision(dataType)) {
 				data = takeInput(dataType, dataString, fileName, spellChecker);
 				isIncorrectWord = spellChecker.suggestWords(data);
-			}
-			else {
+			} else {
 				isIncorrectWord = false;
 			}
 		}
@@ -89,15 +88,16 @@ class Input {
 				return takeInput(dataType, dataString, fileName, spellChecker);
 			else
 				return data;
-		}
-		else {
+		} else {
 			System.out.println("No word completion words were found!");
 		}
 		return data;
 	}
 
 	public static boolean getDecision(String dataType) {
-		System.out.print(dataType.equals(freqCount) ? "Do you want to find frequency count for some other string? (y/n): " : "Do you want to update input? (y/n): " );
+		System.out
+				.print(dataType.equals(freqCount) ? "Do you want to find frequency count for some other string? (y/n): "
+						: "Do you want to update input? (y/n): ");
 		String decision = sc.nextLine();
 		if (decision.toLowerCase().equals("y")) {
 			return true;
@@ -111,7 +111,7 @@ class Input {
 
 	public static Input main(String[] args, String fileName, RBSpellChecker spellChecker) {
 		System.out.println(
-				"Search for a property based on below given parameters (please leave the parameters input empty if it's not decided.): ");
+				"Search for a property based on below given parameters (please leave the parameters input empty if it's not decided): \n");
 		Input input = new Input();
 
 		// taking inputs one by one

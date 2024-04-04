@@ -14,12 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class FrequencyCount {
 	public static void main(String[] args, List<JsonNode> jsonArray, String searchString) {
-//    	ArrayList<String> parameters = new ArrayList<>(Arrays.asList());
-		// Read data from JSON file
 		try {
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode jsonArray = mapper.readTree(new File("data.json"));
-
 			if (jsonArray == null) {
 				System.out.println("No data was filtered!");
 				return;

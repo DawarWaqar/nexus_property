@@ -33,4 +33,6 @@ build/
 .vscode/
 
 data.json
+processedData.json
 .DS_Store
+search_history.his

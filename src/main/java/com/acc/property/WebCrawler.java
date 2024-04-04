@@ -18,12 +18,24 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class WebCrawler {
 	private static WebDriver driver = null;
 	static JSONArray jsonArray = new JSONArray();
 	static WebDriverWait wait;
 
 	public static void main(String[] args) {
+
+		// Get the logger for the relevant class
+		Logger logger = Logger.getLogger("org.openqa.selenium.devtools.CdpVersionFinder");
+
+		// Set the logging level to suppress the warning
+		logger.setLevel(Level.SEVERE); // or Level.WARNING or higher
+
+		System.out.println("Crawling..");
+
 		setupWebDriver();
 		startCrawling();
 	}

@@ -53,51 +53,57 @@ public class InvertedIndexing {
             // Store the listing JSON node
             listingMap.put(id, listing);
         }
+
     }
 
-    public List<JsonNode> search(Map<String, Object> filters) {
+    public List<JsonNode> search(Map<String, String> filters) {
         List<JsonNode> resultList = new ArrayList<>();
         boolean first = true;
 
-        for (Map.Entry<String, Object> entry : filters.entrySet()) {
-            String attribute = entry.getKey();
-            Object value = entry.getValue();
-            Set<String> ids = null;
+        if (filters.isEmpty()) {
+            resultList.addAll(listingMap.values());
+        } else {
+            for (Map.Entry<String, String> entry : filters.entrySet()) {
+                String attribute = entry.getKey();
+                Object value = entry.getValue();
+                Set<String> ids = null;
 
-            // Retrieve IDs from the appropriate index based on the attribute
-            if ("baths".equals(attribute)) {
-                ids = bathsIndex.get(value);
-            } else if ("city".equals(attribute)) {
-                ids = cityIndex.get(value);
-            } else if ("price".equals(attribute)) {
-                ids = priceIndex.get(value);
-            } else if ("propertyType".equals(attribute)) {
-                ids = propertyTypeIndex.get(value);
-            } else if ("location".equals(attribute)) {
-                ids = locationIndex.get(value);
-            } else if ("beds".equals(attribute)) {
-                ids = bedsIndex.get(value);
-            }
-
-            // Perform intersection with previous results or initialize result set
-            if (ids != null) {
-                if (first) {
-                    resultList.addAll(ids.stream()
-                            .map(id -> listingMap.get(id))
-                            .collect(Collectors.toList()));
-                    first = false;
-                } else {
-                    resultList.retainAll(ids.stream()
-                            .map(id -> listingMap.get(id))
-                            .collect(Collectors.toList()));
+                // Retrieve IDs from the appropriate index based on the attribute
+                if ("baths".equals(attribute)) {
+                    ids = bathsIndex.getOrDefault(value, Collections.emptySet());
+                } else if ("city".equals(attribute)) {
+                    ids = cityIndex.getOrDefault(value, Collections.emptySet());
+                } else if ("price".equals(attribute)) {
+                    ids = priceIndex.getOrDefault(value, Collections.emptySet());
+                } else if ("propertyType".equals(attribute)) {
+                    ids = propertyTypeIndex.getOrDefault(value, Collections.emptySet());
+                } else if ("location".equals(attribute)) {
+                    ids = locationIndex.getOrDefault(value, Collections.emptySet());
+                } else if ("beds".equals(attribute)) {
+                    ids = bedsIndex.getOrDefault(value, Collections.emptySet());
                 }
+
+                if (ids != null && !ids.equals(Collections.emptySet())) {
+                    if (first) {
+                        resultList.addAll(ids.stream()
+                                .map(id -> listingMap.get(id))
+                                .collect(Collectors.toList()));
+                        first = false;
+                    } else {
+                        resultList.retainAll(ids.stream()
+                                .map(id -> listingMap.get(id))
+                                .collect(Collectors.toList()));
+                    }
+                }
+
             }
 
         }
+
         if (!resultList.isEmpty()) {
-            System.out.println("Matching listings:\n");
+            System.out.println("\nMatching listings (count: " + resultList.size() + "):\n");
             for (JsonNode listing : resultList) {
-                System.out.println(listing);
+                System.out.println(listing + "\n");
             }
         } else {
             System.out.println("No matching listings found.");
@@ -107,24 +113,25 @@ public class InvertedIndexing {
     }
 
     public List<JsonNode> searchByUserInput(Input userInput) {
-        Map<String, Object> filters = new HashMap<>();
 
-        if (!userInput.baths.isEmpty()) {
+        Map<String, String> filters = new HashMap<>();
+
+        if (userInput.baths != null && userInput.baths != "") {
             filters.put("baths", userInput.baths);
         }
-        if (!userInput.city.isEmpty()) {
+        if (userInput.city != null && userInput.city != "") {
             filters.put("city", userInput.city);
         }
-        if (!userInput.price.isEmpty()) {
+        if (userInput.price != null && userInput.price != "") {
             filters.put("price", userInput.price);
         }
-        if (!userInput.typeOfProperty.isEmpty()) {
+        if (userInput.typeOfProperty != null && userInput.typeOfProperty != "") {
             filters.put("propertyType", userInput.typeOfProperty);
         }
-        if (!userInput.location.isEmpty()) {
+        if (userInput.location != null && userInput.location != "") {
             filters.put("location", userInput.location);
         }
-        if (!userInput.beds.isEmpty()) {
+        if (userInput.beds != null && userInput.beds != "") {
             filters.put("beds", userInput.beds);
         }
 
@@ -136,8 +143,7 @@ public class InvertedIndexing {
         InvertedIndexing index = new InvertedIndexing();
 
         try {
-            index.buildIndex("data.json");
-            
+            index.buildIndex("processedData.json");
 
         } catch (IOException e) {
             e.printStackTrace();
