@@ -71,7 +71,7 @@ public class Main {
     		
             System.out.println();
     		System.out.println("Steps for page ranking will be calculated based on number of bads and baths in a property: ");
-            PropertyRankingByUserPreference.main(args);
+            PropertyRankingByUserPreference.main(args, spellChecker);
 
 			sc.close();
 

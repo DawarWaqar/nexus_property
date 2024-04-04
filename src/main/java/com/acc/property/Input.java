@@ -17,6 +17,8 @@ class Input {
 	String city;
 	private static final String numBedrooms = "beds";
 	private static final String numBathrooms = "baths";
+	private static final String numRankingBedrooms = "rankingbeds";
+	private static final String numRankingBathrooms = "rankingbaths";
 	private static final String propertyType = "propertyType"; // in dollars per month
 	private static final String downPayment = "price"; // in dollars
 	private static final String locationStr = "location";

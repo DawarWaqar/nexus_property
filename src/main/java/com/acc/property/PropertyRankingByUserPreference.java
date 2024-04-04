@@ -8,18 +8,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 public class PropertyRankingByUserPreference {
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the number of beds you want: ");
-        int userBeds = scanner.nextInt();
-        System.out.print("Enter the number of baths you want: ");
-        int userBaths = scanner.nextInt();
-
-        String filePath = "data.json"; // Adjust the path to your JSON file
+    public static void main(String[] args, RBSpellChecker spellChecker) {
+    	String filePath = "data.json"; // Adjust the path to your JSON file
+        int userBeds = Integer.parseInt(Input.takeInput("rankingbeds", "Enter the number of beds you want", filePath, spellChecker));
+        int userBaths =Integer.parseInt(Input.takeInput("rankingbaths", "Enter the number of baths you want", filePath, spellChecker));;
+        
         try {
             List<PropertyListing> listings = loadListings(filePath);
 

@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 public class DataValidation {
 	private static final String numBedrooms = "beds";
 	private static final String numBathrooms = "baths";
+	private static final String numRankingBedrooms = "rankingbeds";
+	private static final String numRankingBathrooms = "rankingbaths";
 	private static final String propertyType = "propertyType"; // in dollars per month
 	private static final String downPayment = "price"; // in dollars
 	private static final String email = "email";
@@ -21,6 +23,7 @@ public class DataValidation {
 	private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&*!])(?=.{8,}$)|^$";
 	private static final String CITY_VALID = "^[a-zA-Z\\s-]+$|^$";
 	private static final String FREQ_COUNT_STRING = "^[a-zA-Z0-9\\s.,'-]+$";
+	private static final String POSITIVE_INTEGER_REGEX_NON_EMPTY = "^[1-9]\\d*$";
 
 	// Validate email
 	public static boolean validateEmail(String email) {
@@ -59,6 +62,10 @@ public class DataValidation {
 	public static boolean validateFrequencyCOuntString(String value) {
 		return Pattern.matches(FREQ_COUNT_STRING, value);
 	}
+	
+	public static boolean validateRankingInputs (String value) {
+		return Pattern.matches(POSITIVE_INTEGER_REGEX_NON_EMPTY, value);
+	}
 
 	public boolean isValid(String strType, String str) {
 		switch (strType) {
@@ -80,6 +87,9 @@ public class DataValidation {
 			return isValidCity(str);
 		case freqCount:
 			return validateFrequencyCOuntString (str);
+		case numRankingBedrooms:
+		case numRankingBathrooms:
+			return validateRankingInputs(str);
 		default:
 			return false;
 		}
