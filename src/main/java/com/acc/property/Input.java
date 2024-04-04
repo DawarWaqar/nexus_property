@@ -1,8 +1,5 @@
 package com.acc.property;
 
-import com.acc.property.DataValidation;
-import com.acc.property.PropertyFileReader;
-import com.acc.property.WordCompletion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -113,13 +110,10 @@ public class Input {
 		}
 		// spell-checker end
 
-		// word-completion started
-
 		// Word completion if data validation is successfull
 		if (validWordCompletionParameters.contains("location") && input.location.length() != 0)
 			searchWordCompletion(locationStr, input.location, "Location", fileName);
 
-		// word-completion ended
 		sc.close();
 		return input;
 	}

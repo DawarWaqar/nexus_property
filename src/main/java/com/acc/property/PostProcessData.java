@@ -13,6 +13,8 @@ public class PostProcessData {
 
     public static void processProperties(String filePath) throws Exception {
 
+        // baths, price, beds
+
         try {
             // Step 1: Read the JSON file and parse it into a JsonNode
             ObjectMapper objectMapper = new ObjectMapper();
@@ -27,7 +29,18 @@ public class PostProcessData {
                     iterator.remove(); // Remove empty object
                 } else {
                     // Append ID to non-empty object
-                    ((ObjectNode) propertyNode).put("id", idCounter++);
+                    ((ObjectNode) propertyNode).put("id", Integer.toString(idCounter++));
+
+                    // Update baths, price, beds using funcA
+                    String updatedBaths = DataExtractor.patternMatch(propertyNode.get("baths").textValue(),
+                            "fetchFirstNumber");
+                    String updatedPrice = DataExtractor.patternMatch(propertyNode.get("price").textValue(), "price");
+                    String updatedBeds = DataExtractor.patternMatch(propertyNode.get("beds").textValue(),
+                            "fetchFirstNumber");
+
+                    ((ObjectNode) propertyNode).put("baths", updatedBaths);
+                    ((ObjectNode) propertyNode).put("price", updatedPrice);
+                    ((ObjectNode) propertyNode).put("beds", updatedBeds);
                 }
             }
 
