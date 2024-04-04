@@ -60,10 +60,10 @@ public class WebCrawler {
 				file.write(jsonArray.toJSONString());
 				System.out.println("JSON array written to data.json file");
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Unable to write in the file! Please try again.");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Unable to crawl! Please try again.");
 		} finally {
 			driver.quit();
 		}
@@ -81,8 +81,9 @@ public class WebCrawler {
 		case "propertyguys":
 			return String.format("https://propertyguys.com/search/ca/");
 		default:
-			throw new IllegalArgumentException("Unsupported website: " + website);
+			System.out.println("Unsupported website: " + website);
 		}
+		return "";
 	}
 
 	public static String GetBedsValue(WebElement item) 
@@ -98,7 +99,6 @@ public class WebCrawler {
 
 		// Extract the text content of the <li> element
 		String bathsValue = bathElement.getText().trim();
-
 		return bathsValue;
 	}
 
@@ -189,11 +189,12 @@ public class WebCrawler {
 					jsonArray.add(itemObject);
 
 				} catch (org.openqa.selenium.NoSuchElementException e) {
+					System.out.println("Unable to find required elements. Please try again.");
 				}
 			}
 		} 
 		catch(Exception e) {
-
+			System.out.println("Unexpected error occured. " + e.getMessage());
 		}
 		finally {
 			//			driver.quit();
@@ -249,7 +250,7 @@ public class WebCrawler {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Unexpected error occured. " + e.getMessage());
 		} finally {
 			//			driver.quit();
 		}
@@ -259,8 +260,6 @@ public class WebCrawler {
 	public static void CrawlPropertyGuys(String defaultUrl, String location) {
 		String Url = String.format("%s%s",defaultUrl,location);
 		driver.get(Url);
-		// Find the div with class "listing-list"
-		//        WebElement listingListDiv = driver.findElement(By.className("listing-list"));
 		WebElement listingListDiv = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("listing-list")));
 
 		// Find all divs with class "listing-container" within listingListDiv
