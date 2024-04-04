@@ -27,7 +27,7 @@ class Input {
 	private static final Scanner sc = new Scanner(System.in);
 
 	public static String takeInput(String dataType, String dataString, String fileName, RBSpellChecker spellChecker) {
-		
+
 		DataValidation d = new DataValidation();
 		String data = "";
 		boolean dataValid = false;
@@ -47,7 +47,7 @@ class Input {
 
 		Boolean isIncorrectWord = spellChecker.suggestWords(data);
 
-		//spell-checker starts
+		// spell-checker starts
 		while (isIncorrectWord) {
 			if (getDecision(dataType)) {
 				data = takeInput(dataType, dataString, fileName, spellChecker);
@@ -82,7 +82,7 @@ class Input {
 			// take input again with valid value
 			if (getDecision(dataType))
 				return takeInput(dataType, dataString, fileName, spellChecker);
-			else 
+			else
 				return data;
 		}
 		return data;
@@ -106,15 +106,16 @@ class Input {
 				"Search for a property based on below given parameters (please leave the parameters input empty if it's not decided.): ");
 		Input input = new Input();
 
-
 		// taking inputs one by one
 		input.price = takeInput(downPayment, "Price", fileName, spellChecker);
 		input.beds = takeInput(numBedrooms, "Number of Bedrooms", fileName, spellChecker);
 		input.baths = takeInput(numBathrooms, "Number of Bathrooms", fileName, spellChecker);
+		System.out.println(
+				"Valid options for property type: residential | commercial | land | special purpose | mixed-use | other");
 		input.typeOfProperty = takeInput(propertyType, "Property Type", fileName, spellChecker);
 		input.city = takeInput(cityStr, "City", fileName, spellChecker);
 		input.location = takeInput(locationStr, "Location", fileName, spellChecker);
-//		sc.close();
+		// sc.close();
 		return input;
 	}
 }
